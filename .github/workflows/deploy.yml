@@ -1,0 +1,45 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main  # Runs when pushing to the main branch
+
+jobs:
+  deploy:
+    name: Deploy to Elastic Beanstalk
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install Dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install AWS CLI & Elastic Beanstalk CLI
+      run: |
+        pip install awscli
+        pip install awsebcli --upgrade
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2  # Change to your AWS region
+
+    - name: Deploy to Elastic Beanstalk
+      run: |
+        eb init -p python-3.9 my-eb-app  # Replace with your app name
+        eb use my-environment  # Replace with your environment name
+        eb deploy
