@@ -22,3 +22,7 @@ app.include_router(cleanup.router)
 @app.get("/")
 def home():
     return {"message": "Welcome to the AI Chatbot API"}
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, world!"}
