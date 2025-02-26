@@ -41,5 +41,5 @@ jobs:
     - name: Deploy to Elastic Beanstalk
       run: |
         eb init -p python-3.9 my-api # Replace with your app name
-        eb use ai-agent-env # Replace with your environment name
-        eb deploy
+        eb use my-agent-env # Replace with your environment name
+        eb deploy --timeout 30
