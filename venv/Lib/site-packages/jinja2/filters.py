@@ -438,7 +438,7 @@ def do_sort(
 
 
 @pass_environment
-def sync_do_unique(
+def do_unique(
     environment: "Environment",
     value: "t.Iterable[V]",
     case_sensitive: bool = False,
@@ -468,18 +468,6 @@ def sync_do_unique(
         if key not in seen:
             seen.add(key)
             yield item
-
-
-@async_variant(sync_do_unique)  # type: ignore
-async def do_unique(
-    environment: "Environment",
-    value: "t.Union[t.AsyncIterable[V], t.Iterable[V]]",
-    case_sensitive: bool = False,
-    attribute: t.Optional[t.Union[str, int]] = None,
-) -> "t.Iterator[V]":
-    return sync_do_unique(
-        environment, await auto_to_list(value), case_sensitive, attribute
-    )
 
 
 def _min_or_max(
@@ -999,7 +987,7 @@ def do_int(value: t.Any, default: int = 0, base: int = 10) -> int:
         # this quirk is necessary so that "42.23"|int gives 42.
         try:
             return int(float(value))
-        except (TypeError, ValueError, OverflowError):
+        except (TypeError, ValueError):
             return default
 
 
@@ -1128,7 +1116,7 @@ def do_batch(
         {%- endfor %}
         </table>
     """
-    tmp: t.List[V] = []
+    tmp: "t.List[V]" = []
 
     for item in value:
         if len(tmp) == linecount:
@@ -1641,8 +1629,8 @@ def sync_do_selectattr(
 
     .. code-block:: python
 
-        (user for user in users if user.is_active)
-        (user for user in users if test_none(user.email))
+        (u for user in users if user.is_active)
+        (u for user in users if test_none(user.email))
 
     .. versionadded:: 2.7
     """
@@ -1679,8 +1667,8 @@ def sync_do_rejectattr(
 
     .. code-block:: python
 
-        (user for user in users if not user.is_active)
-        (user for user in users if not test_none(user.email))
+        (u for user in users if not user.is_active)
+        (u for user in users if not test_none(user.email))
 
     .. versionadded:: 2.7
     """
@@ -1780,7 +1768,7 @@ def prepare_select_or_reject(
         args = args[1 + off :]
 
         def func(item: t.Any) -> t.Any:
-            return context.environment.call_test(name, item, args, kwargs, context)
+            return context.environment.call_test(name, item, args, kwargs)
 
     except LookupError:
         func = bool  # type: ignore
