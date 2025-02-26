@@ -27,7 +27,7 @@ pydantic==2.10.4
 pydantic_core==2.27.2
 PyMySQL==1.1.1
 python-dateutil==2.9.0.post0
-pywin32==308
+# pywin32==308
 PyYAML==6.0.2
 requests==2.32.3
 semantic-version==2.10.0
