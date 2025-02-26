@@ -40,6 +40,6 @@ jobs:
 
     - name: Deploy to Elastic Beanstalk
       run: |
-        eb init -p python-3.9 my-eb-app  # Replace with your app name
-        eb use my-environment  # Replace with your environment name
+        eb init -p python-3.9 my-api # Replace with your app name
+        eb use my-api  # Replace with your environment name
         eb deploy
